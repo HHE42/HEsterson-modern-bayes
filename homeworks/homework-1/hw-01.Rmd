@@ -1,8 +1,10 @@
 ---
 title: 'Data Wrangling in \texttt{R}'
-author: "STA 360: Assignment 1, Fall 2020"
+subtitle: "STA 360: Assignment 1, Fall 2020"
+author: "Hugh Esterson"
 date: "Due Friday August 21, 5 PM Standard Eastern Time"
 output: pdf_document
+urlcolor: blue
 ---
 
 Today's agenda: Manipulating data objects; using the built-in functions, doing numerical calculations, and basic plots; reinforcing core probabilistic ideas.
@@ -25,58 +27,150 @@ Total points on assignment: 10 (reproducibility) + 22 (Q1) + 9 (Q2) + 3 (Q3) = 4
 
 Reproducibility component: 10 points. 
 
+
+```{r packages, message=FALSE}
+# load packages
+library(tidyverse)
+```
+
 1.  (22 points total, equally weighted) The data set **rnf6080.dat** records hourly rainfall at a certain location in Canada, every day from 1960 to 1980.
 
 a. Load the data set into R and make it a data frame called \texttt{rain.df}.  What command did you use?
+```{r 1a}
+# load & name dataset
+rain.df <- read.table("data/rnf6080.dat")
+```
+I used the $read.table$ command, which loads the .dat file through its corresponding file location.
+(Source: https://www.datafiles.samhsa.gov/faq/how-do-i-read-data-r-nid3445.)
 
 b. How many rows and columns does \texttt{rain.df} have?  How do you know?  (If there are not 5070 rows and 27 columns, you did something wrong in the first part of the problem.)
 
+```{r 1b}
+# find dimensions of dataset
+dim(rain.df)
+```
+$rain.df$ has 5,070 rows and 27 columns. I found this information by using the $dim$ fucntion, which shows the dimension of an object within R.
+
 c. What command would you use to get the names of the columns of \texttt{rain.df}? What are those names?
+```{r 1c}
+# find col names
+colnames(rain.df)
+```
+You would use the $colnames$ command to get the names of the columns within $rain.df$. These names are listed in the output above, showing they span $V1$ through $V27$.
 
 d. What command would you use to get the value at row 2, column 4? What is the value?
-e. What command would you use to display the whole second row?  What is the content of that row?
-f.  What does the following command do?
+```{r 1d}
+# call row 2, col 4 entry
+rain.df[2,4]
 ```
+In order to get the entry of a specific row and column, you can call the dataframe, along with the specified coordinates. In this case, row 2, column 4 yields a value of 0.
+
+e. What command would you use to display the whole second row?  What is the content of that row?
+```{r 1e}
+# call second row
+rain.df[2,]
+```
+Similarly, you can display an entire row by calling the dataframe, with a coordinate for the row number, followed by a comma and no coordinate for the column. In this case, the second row is composed of the values 60, 4, and 2 for $V1$ through $V3$, respectively, followed by 0 from $V4$ through $V27$.
+
+
+f.  What does the following command do?
+```{r 1f}
 names(rain.df) <- c("year","month","day",seq(0,23))
 ```
+The following command renames the columns of $rain.df$. Specifically, it names the first three columns, $year$, $month$, and $day$, while naming the remaining columns $0$ through $23$, representing each hour of a day. 
+
 g.  Create a new column called \texttt{daily}, which is the sum of the 24 hourly columns.
+```{r 1g}
+# add daily variable, with col sum
+rain.df <- rain.df %>% 
+  mutate(daily = select(rain.df, 4:27) %>%
+           rowSums(na.rm = TRUE))
+```
+In order to create a new column that summed the hourly rain totals, I used a $tidyverse$ and $dplyr$ approach. This approach was shown on the linked StackOverflow thread and selects the fourth through 27th columns, which are the hourly rain totals in the original dataframe.
+(Source: https://stackoverflow.com/questions/29006056/efficiently-sum-across-multiple-columns-in-r)
+
 h. Give the command you would use to create a histogram of the daily rainfall amounts.  Please make sure to attach your figures in your .pdf report. 
+```{r 1h}
+# plot simple histogram
+hist(rain.df$daily)
+```
+
+Using the $hist$ command, you can call a variable from a dataframe to create a histogram of that variable's values. 
+
 i. Explain why that histogram above cannot possibly be right.
+
+The histogram above cannot possible be right because there is a small histogram bar at a negative value of $daily$. In context, this would mean that there was negative daily rain total, which is not possible.
+
 j. Give the command you would use to fix the data frame.
+```{r 1j}
+# replace negative daily values with assumed 0
+rain.df$daily <- pmax(0, rain.df$daily)
+```
+
+Upon further review of the dataframe, it looks as though erroneous readings were inputted as a value of "-999." This led to negative daily rain totals, which does not make sense contextually. Thus, you could replace these negative summed values with an assumed value of 0.
+(Source: https://stackoverflow.com/questions/36543996/set-minimum-value-to-a-specific-column-in-r)
+
+
 k. Create a corrected histogram and again include it as part of your submitted report. Explain why it is
 more reasonable than the previous histogram.
+```{r 1k}
+# replot histogram of daily rainfall
+hist(rain.df$daily)
+```
+
+Repeating the $hist$ function call on the $daily$ variable, one can see that this histogram is more reasonable. There are only negative values of daily rain total along the horizontal axis, with the majority of days showing little to no rain, which is to expected in most climates.
+
 
 ***Data types***
 
 2. (9 points, equally weighted) Make sure your answers to different parts of this problem are compatible with each other.
 
 a. For each of the following commands, either explain why they should be errors, or explain the non-erroneous result.
-```
+```{r 2a, error=TRUE}
 x <- c("5","12","7")
 max(x)
 sort(x)
 sum(x)
 ```
+The $max$ command will return "7" as a non-erroneous result. This is because the factor is built of strings, and not numerical values. Thus, the string with the highest first digit will be returned as the maximum.
+
+The $sort$ command will return a non-erroneous result. It will be "12," followed by "5," followed by "7." This again will sort from the smallest to largest first digit of the respective strings.
+
+The $sum$ command will return an error, as you cannot sum multiple strings.
+
 b. For the next two commands, either explain their results, or why they
 should produce errors.
-```
+```{r 2b, error=TRUE}
 y <- c("5",7,12)
 y[2] + y[3]
 ```
+The $c$ command will build a vector of strings: "5," "7," and "12." This is non-erroneous, although one should note that all parts of this vector will be of type string.
+
+The second command will return an error, as you cannot compute arithmetic on string values.
+
 c. For the next two commands, either explain their results, or why they should
 produce errors.
-```
+```{r 2c, error=TRUE}
 z <- data.frame(z1="5",z2=7,z3=12)
 z[1,2] + z[1,3]
 ```
+The $data.frame$ command will build a dataframe with $z1$, $z2$, and $z3$ as the column names, with $z1$ being of type character and $z2$ and $z3$ being of type double. The corresponding values of 5, 7, and 12 will be placed as the values within this dataframe.
+
+The second command will sum the second and third columns of the first row. Since these are both of type double, arithmetic will lead to a non-erroneous result. In this case, the sum of the two entries will be 19.
 
 3. (3 pts, equally weighted). 
 
 a.) What is the point of reproducible code? 
 
-b.) Given an example of why making your code reproducible is important for you to know in this class and moving forward. 
+The point of reproducible code is to ensure that your code can be not only run, but also understood, by others. Keeping reproducibility in mind, you can essentially allow your code to be analyzed anywhere, at anytime, by anyone. 
+
+b.) Give an example of why making your code reproducible is important for you to know in this class and moving forward. 
+
+I think it is important for me to know the power of reproducible code because it is a standard practice in coding-based work and academic environments. For this class and others I have taken, reproducible code can allow a classmate, instructor, or TA to quickly and easily find bugs or points of trouble in my code. In a work environment, reproducible code is important for working on group projects, where other programmers will need to be able to understand and manipulate your code quickly.
+
 
 c.) On a scale of 1 (easy) -- 10 (hard), how hard was this assignment. If this assignment was hard ($>5$), please state in one sentence what you struggled with. 
 
+For this first assignment, I would rate its difficult as a 4.
 
 
