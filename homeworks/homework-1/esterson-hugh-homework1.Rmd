@@ -82,7 +82,7 @@ rain.df <- rain.df %>%
            rowSums(na.rm = TRUE))
 ```
 In order to create a new column that summed the hourly rain totals, I used a $tidyverse$ and $dplyr$ approach. I have become familiar with this package and style from previous classes, especially STA 323, which had a full lecture on the multiple, helpful uses of $dplyr$. This approach was also shown on the linked StackOverflow thread and selects the fourth through 27th columns, which are the hourly rain totals in the original dataframe.
-(Source: https://stackoverflow.com/questions/29006056/efficiently-sum-across-multiple-columns-in-r)
+(Source: https://stackoverflow.com/questions/29006056/efficiently-sum-across-multiple-columns-in-r).
 
 h. Give the command you would use to create a histogram of the daily rainfall amounts.  Please make sure to attach your figures in your .pdf report. 
 ```{r 1h}
@@ -118,7 +118,7 @@ hist(rain.df$daily,
      ylab = "Number of Days")
 ```
 
-Repeating the $hist$ function call on the $daily$ variable, one can see that this histogram is more reasonable. There are positive negative values of daily rain total along the horizontal axis, with the majority of days showing little to no rain, which is to expected in most climates. This change was made through replacing all the faulty, negative rainfall readings to $NA$ within the dataframe. 
+Repeating the $hist$ function call on the $daily$ variable, one can see that this histogram is more reasonable. There are positive negative values of daily rain total along the horizontal axis, with the majority of days showing little to no rain (skewed right), which is to be expected in most climates. This change was made through replacing all the faulty, negative rainfall readings to $NA$ within the dataframe. 
 
 
 ***Data types***
@@ -146,7 +146,7 @@ y <- c("5",7,12)
 y[2] + y[3]
 ```
 
-The $c$ command will build a vector of three elements of type character: "5," "7," and "12." This is non-erroneous, although one should note that all parts of this vector will be of type characters.
+The $c$ command will build a vector of three elements, coerced to type character: "5," "7," and "12." This is non-erroneous, although one should note that all parts of this vector will be of type characters.
 
 The second command will return an error, as you cannot compute arithmetic on character values.
 
@@ -169,7 +169,7 @@ The point of reproducible code is to ensure that your code can be not only run, 
 
 b.) Give an example of why making your code reproducible is important for you to know in this class and moving forward. 
 
-I think it is important for me to know the power of reproducible code because it is a standard practice in coding-based work and academic environments. For this class and others I have taken, reproducible code can allow a classmate, instructor, or TA to quickly and easily find bugs or points of trouble in my code. In a work environment, reproducible code is important for working on group projects, where other programmers will need to be able to understand and manipulate your code quickly.
+I think it is important for me to know the power of reproducible code because it is a standard practice in coding-based work and academic environments. For this class and others I have taken, reproducible code can allow a classmate, instructor, or TA to quickly and easily find bugs or points of trouble in my code. In a work environment, reproducible code is important for working on group projects, where other programmers will need to be able to understand and manipulate your code quickly. This is especially true in a growingly "open-source," scientific setting.
 
 c.) On a scale of 1 (easy) -- 10 (hard), how hard was this assignment. If this assignment was hard ($>5$), please state in one sentence what you struggled with. 
 
@@ -178,6 +178,6 @@ For this first assignment, I would rate its difficult as a 6. To me, most of the
 # Notes & References
 - For this assignment, I referred to Prof. Steort's "Intro to R" materials. This served as a helpful refresher and guide as to which functions to review and utilize in this homework.
 - I also referred to, but did not explicitly copy portions of, previous assignments I had completed in STA 210 and STA 323. These resources also helped me to remind myself of coding styles I had used in the past.
-- Lastly, as per the course's policies, I discussed portions of the assignment with my classmate Calleigh S. We each used our own, independent approaches, but found it useful to discuss the material.
+- Lastly, as per the course's policies, I discussed portions of the assignment with my classmate Calleigh S. and Sara B. We each used our own, independent approaches, but found it useful to discuss the material.
 
 
