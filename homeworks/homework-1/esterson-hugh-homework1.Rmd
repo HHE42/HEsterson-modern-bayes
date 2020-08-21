@@ -101,7 +101,7 @@ The histogram above cannot possible be right because there is a small bin of the
 
 j. Give the command you would use to fix the data frame.
 ```{r 1j}
-# replace negative daily values with assumed 0
+# replace negative daily values with NA
 rain.df[rain.df < 0] <- NA
 ```
 
