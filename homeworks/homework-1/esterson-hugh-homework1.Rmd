@@ -70,6 +70,7 @@ Similarly, you can display an entire row by calling the dataframe, with a coordi
 
 f.  What does the following command do?
 ```{r 1f}
+# rename columns
 names(rain.df) <- c("year","month","day",seq(0,23))
 ```
 The following command renames the columns of $rain.df$. Specifically, it names the first three columns, $year$, $month$, and $day$, while naming the remaining columns $0$ through $23$, representing each hour of a day. 
